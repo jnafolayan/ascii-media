@@ -59,12 +59,10 @@ export default {
       baseRatio: 0,
       uploadVisible: false,
       image: null,
-      renderObject: null,
       ctx: null,
       tmpCanvas: null,
       tmpCtx: null,
-      glyphs: {},
-      gimgs: {}
+      glyphs: {}
     };
   },
 
@@ -154,8 +152,6 @@ export default {
         ctx.textBaseline = "middle";
         ctx.fillStyle = color || "#00f";
         ctx.fillText(char, w / 2, h / 2);
-
-        this.gimgs[char] = canvas;
 
         this.glyphs[char] = ctx.getImageData(0, 0, w, h).data;
       }

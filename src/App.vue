@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="flex items-center justify-center h-screen">
     <display />
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
 }
 
 body {
-  @apply bg-gray-900;
+  @apply bg-gray-300;
+  background: rgb(20, 20, 20);
 }
 
 #app {

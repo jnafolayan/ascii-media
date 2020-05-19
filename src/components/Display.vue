@@ -27,15 +27,10 @@
 
     <div
       title="Toggle mode"
-      class="absolute shadow-lg cursor-pointer bottom-0 bg-blue-600 rounded-full w-16 h-16 flex items-center justify-center"
-      style="left: 50%; transform: translate(-50%, 50%)"
+      class="absolute shadow-lg cursor-pointer bottom-0 right-0 mr-4 mb-4 bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center"
       @click="toggleMode()"
     >
-      <fa-icon
-        :icon="mode == 'camera' ? 'upload' : 'camera'"
-        class="text-white"
-        size="2x"
-      />
+      <fa-icon :icon="mode == 'camera' ? 'upload' : 'camera'" class="text-white" />
     </div>
   </div>
 </template>
@@ -61,7 +56,7 @@ export default {
       tmpCanvas: null,
       tmpCtx: null,
       glyphs: {},
-      gimgs: {},
+      gimgs: {}
     };
   },
 
@@ -78,7 +73,7 @@ export default {
 
     navigator.mediaDevices
       .getUserMedia({ video: { width: 840, height: 480 } })
-      .then((stream) => {
+      .then(stream => {
         video.srcObject = stream;
 
         video.width = video.videoWidth;
@@ -102,18 +97,19 @@ export default {
     resize() {
       const canvas = this.$refs["canvas"];
       const winRatio = window.innerWidth / window.innerHeight;
+      const ratio = this.width / this.height;
 
       if (
         !(window.innerWidth < this.width || window.innerHeight < this.height)
       ) {
         canvas.style.width = `${this.width}px`;
         canvas.style.height = `${this.height}px`;
-      } else if (winRatio < this.baseRatio) {
+      } else if (winRatio < ratio) {
         canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${window.innerWidth / this.baseRatio}px`;
+        canvas.style.height = `${window.innerWidth / ratio}px`;
       } else {
         canvas.style.height = `${window.innerHeight}px`;
-        canvas.style.width = `${window.innerHeight * this.baseRatio}px`;
+        canvas.style.width = `${window.innerHeight * ratio}px`;
       }
     },
 
@@ -267,8 +263,8 @@ export default {
     },
     hideUpload() {
       this.uploadVisible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

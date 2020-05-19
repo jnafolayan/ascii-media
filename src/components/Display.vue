@@ -94,9 +94,29 @@ export default {
     };
 
     loop();
+    this.resize();
+    window.addEventListener("resize", () => this.resize());
   },
 
   methods: {
+    resize() {
+      const canvas = this.$refs["canvas"];
+      const winRatio = window.innerWidth / window.innerHeight;
+
+      if (
+        !(window.innerWidth < this.width || window.innerHeight < this.height)
+      ) {
+        canvas.style.width = `${this.width}px`;
+        canvas.style.height = `${this.height}px`;
+      } else if (winRatio < this.baseRatio) {
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerWidth / this.baseRatio}px`;
+      } else {
+        canvas.style.height = `${window.innerHeight}px`;
+        canvas.style.width = `${window.innerHeight * this.baseRatio}px`;
+      }
+    },
+
     toggleMode() {
       this.mode = this.mode == "camera" ? "upload" : "camera";
       if (this.mode == "upload") {
@@ -161,7 +181,7 @@ export default {
             }
           }
           avg /= groupWidth * groupHeight * 3;
-          const shade = Math.max(0, (avg / 255) * 0.95);
+          const shade = Math.max(0, (avg / 255) * 1);
           const char = ramp[Math.floor(shade * ramp.length)];
 
           // render the glyph
@@ -225,12 +245,6 @@ export default {
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, this.width, this.height);
       ctx.drawImage(frame, 0, 0);
-
-      // delete this.glyphs[":"];
-      // this.getGlyph(":", "#fff", 2, 2, 5);
-      // ctx.drawImage(this.gimgs[":"], 100, 100);
-      // ctx.strokeStyle = "#fff";
-      // ctx.strokeRect(100, 100, 30, 30);
     },
 
     loadImage({ target }) {
@@ -242,6 +256,7 @@ export default {
         this.image = new Image();
         this.image.onload = () => {
           this.renderASCIIFromFrame(this.image);
+          this.resize();
         };
         this.image.src = reader.result;
       };

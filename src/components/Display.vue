@@ -24,13 +24,21 @@
         />
       </div>
     </label>
-
-    <div
-      title="Toggle mode"
-      class="absolute shadow-lg cursor-pointer bottom-0 right-0 mr-4 mb-4 bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center"
-      @click="toggleMode()"
-    >
-      <fa-icon :icon="mode == 'camera' ? 'upload' : 'camera'" class="text-white" />
+    <div class="absolute bottom-0 right-0 mr-4 mb-4 flex">
+      <div
+        title="Save image"
+        class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 mr-2 flex items-center justify-center"
+        @click="saveImage()"
+      >
+        <fa-icon icon="camera" class="text-white" />
+      </div>
+      <div
+        title="Toggle mode"
+        class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center"
+        @click="toggleMode()"
+      >
+        <fa-icon icon="exchange-alt" class="text-white" />
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +103,17 @@ export default {
   },
 
   methods: {
+    saveImage() {
+      const link = document.createElement("a");
+      link.href = this.$refs["canvas"].toDataURL("image/png");
+      link.download =
+        "ASCII_Image_" +
+        Math.random()
+          .toString(32)
+          .substr(2);
+      link.click();
+    },
+
     resize() {
       const canvas = this.$refs["canvas"];
       const winRatio = window.innerWidth / window.innerHeight;

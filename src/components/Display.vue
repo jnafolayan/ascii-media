@@ -78,6 +78,7 @@ export default {
 
         video.width = video.videoWidth;
         video.height = video.videoHeight;
+        setTimeout(() => this.resize(), 300);
       });
 
     const loop = () => {
@@ -89,7 +90,7 @@ export default {
     };
 
     loop();
-    this.resize();
+    setTimeout(() => this.resize(), 200);
     window.addEventListener("resize", () => this.resize());
   },
 
@@ -118,6 +119,7 @@ export default {
       if (this.mode == "upload") {
         this.$refs["uploadInput"].click();
       }
+      setTimeout(() => this.resize(), 200);
     },
 
     getGlyph(char, color, w, h, size) {

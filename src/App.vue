@@ -10,8 +10,8 @@ import Display from "./components/Display";
 export default {
   name: "App",
   components: {
-    Display,
-  },
+    Display
+  }
 };
 </script>
 

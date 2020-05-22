@@ -1,49 +1,63 @@
 <template>
-  <div class="relative" @mouseenter="showUpload" @mouseleave="hideUpload">
+  <div
+    class="relative mt-2 mx-auto max-w-4xl"
+    @mouseenter="showUpload"
+    @mouseleave="hideUpload"
+  >
     <canvas
-      class="canvas rounded-lg border-4 shadow-lg"
+      class="canvas rounded-lg border-2 w-full"
       style="border-color: rgb(110,110,110)"
       ref="canvas"
-      width="840"
+      width="860"
       height="480"
     ></canvas>
 
-    <label for="fileUpload" class="cursor-pointer">
-      <div
-        v-show="uploadVisible && mode == 'upload'"
-        class="absolute top-0 left-0 w-full h-full bg-gray-500 bg-opacity-75 flex items-center justify-center"
-      >
-        <fa-icon icon="upload" size="3x" class="text-black" />
+    <div class="flex justify-between mt-4">
+      <div title="Quality" class="cursor-pointer mr-2">
+        <label class="block text-left text-gray-200 text-sm"
+          >Adjust quality (2 - 10)</label
+        >
         <input
-          hidden
-          ref="uploadInput"
-          id="fileUpload"
-          type="file"
-          accept="image/*"
-          @change="loadImage"
+          class="block"
+          v-model="groupSize"
+          type="range"
+          min="2"
+          max="10"
+          step="2"
         />
       </div>
-    </label>
-    <div class="absolute bottom-0 right-0 mr-4 mb-4 flex">
-      <div
-        title="Quality"
-        class="shadow-lg cursor-pointer w-auto mr-2 flex items-center justify-center"
-      >
-        <input v-model="groupSize" type="range" min="2" max="20" step="2" />
-      </div>
-      <div
-        title="Save image"
-        class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 mr-2 flex items-center justify-center"
-        @click="saveImage()"
-      >
-        <fa-icon icon="camera" class="text-white" />
-      </div>
-      <div
-        title="Toggle mode"
-        class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center"
-        @click="toggleMode()"
-      >
-        <fa-icon icon="exchange-alt" class="text-white" />
+      <div class="flex">
+        <label
+          v-if="mode == 'upload'"
+          for="fileUpload"
+          title="Save image"
+          class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 mr-2 flex items-center justify-center"
+        >
+          <fa-icon icon="upload" class="text-white" />
+          <input
+            hidden
+            ref="uploadInput"
+            id="fileUpload"
+            type="file"
+            accept="image/*"
+            @change="loadImage"
+          />
+        </label>
+        <div
+          v-else
+          title="Save frame"
+          class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 mr-2 flex items-center justify-center"
+          @click="saveImage()"
+        >
+          <fa-icon icon="camera" class="text-white" />
+        </div>
+        <div
+          title="Toggle mode"
+          class="shadow-lg cursor-pointer bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center"
+          @click="toggleMode()"
+        >
+          <fa-icon icon="exchange-alt" class="text-white" />
+        </div>
       </div>
     </div>
   </div>
@@ -93,7 +107,7 @@ export default {
       tmpCanvas: null,
       tmpCtx: null,
       glyphs: {},
-      groupSize: 8
+      groupSize: 8,
     };
   },
 
@@ -109,7 +123,7 @@ export default {
     video.setAttribute("autoplay", true);
 
     getUserMedia({ video: { width: 860, height: 480 } })
-      .then(stream => {
+      .then((stream) => {
         video.srcObject = stream;
 
         video.width = video.videoWidth;
@@ -146,32 +160,49 @@ export default {
     },
 
     resize() {
+      console.log(999);
       const canvas = this.$refs["canvas"];
-      const winRatio = window.innerWidth / window.innerHeight;
-      const ratio = this.width / this.height;
+      const [winWidth, winHeight] = [
+        parseInt(getComputedStyle(canvas).width, 10),
+        Math.min(600, window.innerHeight * 0.8),
+      ];
+      console.log(winWidth);
+      const winRatio = winWidth / winHeight;
+      const ratio = this.baseWidth / this.baseHeight;
 
-      if (
-        !(window.innerWidth < this.width || window.innerHeight < this.height)
-      ) {
-        canvas.style.width = `${this.width}px`;
-        canvas.style.height = `${this.height}px`;
+      if (!(winWidth < this.baseWidth || winHeight < this.baseHeight)) {
+        canvas.style.width = `${this.baseWidth}px`;
+        canvas.style.height = `${this.baseHeight}px`;
       } else if (winRatio < ratio) {
-        canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${Math.floor(window.innerWidth / ratio)}px`;
+        canvas.style.width = `${winWidth}px`;
+        canvas.style.height = `${Math.floor(winWidth / ratio)}px`;
       } else {
-        canvas.style.height = `${window.innerHeight}px`;
-        canvas.style.width = `${Math.floor(window.innerHeight * ratio)}px`;
+        canvas.style.height = `${winHeight}px`;
+        canvas.style.width = `${Math.floor(winHeight * ratio)}px`;
       }
     },
 
+    // resize() {
+    //   const canvas = this.$refs["canvas"];
+    //   const winRatio = window.innerWidth / window.innerHeight;
+    //   const ratio = this.width / this.height;
+
+    //   if (
+    //     !(window.innerWidth < this.width || window.innerHeight < this.height)
+    //   ) {
+    //     canvas.style.width = `${this.width}px`;
+    //     canvas.style.height = `${this.height}px`;
+    //   } else if (winRatio < ratio) {
+    //     canvas.style.width = `${window.innerWidth}px`;
+    //     canvas.style.height = `${Math.floor(window.innerWidth / ratio)}px`;
+    //   } else {
+    //     canvas.style.height = `${window.innerHeight}px`;
+    //     canvas.style.width = `${Math.floor(window.innerHeight * ratio)}px`;
+    //   }
+    // },
+
     toggleMode() {
       this.mode = this.mode == "camera" ? "upload" : "camera";
-      if (this.mode == "upload") {
-        this.$refs["uploadInput"].click();
-        this.groupSize = 4;
-      } else {
-        this.groupSize = 10;
-      }
       setTimeout(() => this.resize(), 200);
     },
 
@@ -303,7 +334,7 @@ export default {
 
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, this.width, this.height);
-      ctx.drawImage(frame, 0, 0);
+      ctx.drawImage(frame, 0, 0, this.width, this.height);
     },
 
     loadImage({ target }) {
@@ -326,15 +357,15 @@ export default {
     },
     hideUpload() {
       this.uploadVisible = false;
-    }
+    },
   },
   watch: {
     groupSize() {
       // clear cache
       this.glyphs = {};
       setTimeout(() => this.resize(), 100);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -344,6 +375,6 @@ export default {
 }
 
 .canvas {
-  image-rendering: optimizeQuality;
+  image-rendering: optimizequality;
 }
 </style>

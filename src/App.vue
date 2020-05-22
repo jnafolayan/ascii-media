@@ -1,17 +1,20 @@
 <template>
-  <div id="app" class="flex items-center justify-center h-screen">
+  <div id="app" class="px-3">
+    <app-header />
     <display />
   </div>
 </template>
 
 <script>
+import AppHeader from "./components/AppHeader";
 import Display from "./components/Display";
 
 export default {
   name: "App",
   components: {
-    Display
-  }
+    AppHeader,
+    Display,
+  },
 };
 </script>
 

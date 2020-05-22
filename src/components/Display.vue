@@ -5,14 +5,14 @@
     @mouseleave="hideUpload"
   >
     <canvas
-      class="canvas rounded-lg border-2 w-full"
+      class="canvas rounded-lg border-2 w-full mx-auto"
       style="border-color: rgb(110,110,110)"
       ref="canvas"
       width="860"
       height="480"
     ></canvas>
 
-    <div class="flex justify-between mt-4">
+    <div class="flex justify-between mt-4 px-2">
       <div title="Quality" class="cursor-pointer mr-2">
         <label class="block text-left text-gray-200 text-sm"
           >Adjust quality (2 - 10)</label
@@ -160,19 +160,17 @@ export default {
     },
 
     resize() {
-      console.log(999);
       const canvas = this.$refs["canvas"];
       const [winWidth, winHeight] = [
-        parseInt(getComputedStyle(canvas).width, 10),
+        parseInt(getComputedStyle(canvas.parentElement).width, 10),
         Math.min(600, window.innerHeight * 0.8),
       ];
-      console.log(winWidth);
       const winRatio = winWidth / winHeight;
-      const ratio = this.baseWidth / this.baseHeight;
+      const ratio = this.width / this.height;
 
-      if (!(winWidth < this.baseWidth || winHeight < this.baseHeight)) {
-        canvas.style.width = `${this.baseWidth}px`;
-        canvas.style.height = `${this.baseHeight}px`;
+      if (!(winWidth < this.width || winHeight < this.height)) {
+        canvas.style.width = `${this.width}px`;
+        canvas.style.height = `${this.height}px`;
       } else if (winRatio < ratio) {
         canvas.style.width = `${winWidth}px`;
         canvas.style.height = `${Math.floor(winWidth / ratio)}px`;
@@ -376,5 +374,6 @@ export default {
 
 .canvas {
   image-rendering: optimizequality;
+  transform: scale(-1, 1);
 }
 </style>
